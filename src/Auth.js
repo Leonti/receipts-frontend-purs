@@ -8,12 +8,13 @@ var webAuth = new auth0.WebAuth({
 });
 
 function setSession(authResult) {
-  var expiresAt = JSON.stringify(
-    authResult.expiresIn * 1000 + new Date().getTime()
-  );
+  var expiryTimeMs = authResult.expiresIn * 1000 + new Date().getTime();
+
   localStorage.setItem('access_token', authResult.accessToken);
   localStorage.setItem('id_token', authResult.idToken);
-  localStorage.setItem('expires_at', expiresAt);
+  localStorage.setItem('expires_at', JSON.stringify(expiryTimeMs));
+
+  document.cookie = 'access_token=' + authResult.accessToken + '; expires=' + new Date(expiryTimeMs).toUTCString()
 }
 
 function isAuthenticated() {

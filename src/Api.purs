@@ -1,4 +1,4 @@
-module Api(getReceipts, ensureUserExists) where
+module Api(getReceipts, ensureUserExists, receiptFileUrl) where
 
 import Prelude
 
@@ -14,6 +14,10 @@ import Data.HTTP.Method (Method(..))
 import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
 import Models (File(..), Receipt(..), UserInfo(..))
+import Data.Array (head)
+
+receiptFileUrl :: Receipt -> Maybe String
+receiptFileUrl (Receipt receipt) = map (\(File file) -> "http://localhost:9000/receipt/" <> receipt.id <> "/file/" <> file.id <>  "." <> file.ext) (head receipt.files)
 
 getReceipts :: AccessToken -> Aff (Either String (Array Receipt))
 getReceipts (AccessToken accessToken) = do
